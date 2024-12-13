@@ -1,73 +1,61 @@
-# podmigration-operator
-## The document to init K8s cluster, which enables Podmigration, can be found at: 
-- https://github.com/SSU-DCN/podmigration-operator/blob/main/init-cluster-containerd-CRIU.md
+* Service Transition Experimental Analysis - Pod Migration
 
-## How to run:
-(Run this command at directory podmigration-operator/)
-* To run Podmigration operator, which includes CRD and a custom controller:
-```
-$ sudo snap install kustomize
-$ sudo apt-get install gcc
-$ make manifests
-$ make install
-$ make run
-```
-* To run api-server, which enables ```kubectl migrate``` command and GUI: (at podmigration-operator/ directory)
-```
-$ go run ./api-server/cmd/main.go
-```
-* To install ```kubectl migrate/checkpoint``` command, follow the guide at https://github.com/SSU-DCN/podmigration-operator/tree/main/kubectl-plugin
-* To run GUI:
-```
-$ cd podmigration-operator/gui
-$ npm install
-$ npm run serve
-```
-### Demo video:
-1. Migrate video streaming pod from node to node in single cluster:
- -  https://www.youtube.com/watch?v=M4Ik7aUKhas&t=1s&ab_channel=Xu%C3%A2nT%C6%B0%E1%BB%9DngV%C5%A9
-2. Migrate video streaming pod from cluster to cluster:
- -  https://www.youtube.com/watch?v=Bpdlgu0XZqo
- - https://drive.google.com/file/d/1AeyJZTRJcayBelvXf-CZwFapoquBpns1/view?usp=sharing
+This repository contains experimental analysis for service transition using **pod migration** in a Kubernetes cluster. The primary focus is to evaluate and improve **latency during migration** using **CRIU** (Checkpoint/Restore in Userspace) and other tools.
 
-## Test live-migrate pod:
-* Run/check video-stream application:
+## Key Features
+
+* **Pod Migration:** Leveraging CRIU and containerd to enable live migration of pods between Kubernetes worker nodes.
+* **NFS Integration:** Shared state storage to support checkpointing and restoration.
+* **Performance Optimization:** Analyzing latency and optimizing the migration process, compared to the default Kubernetes.
+
+## Getting Started
+
+### 1. Prerequisites
+
+* Kubernetes cluster with 1 master node and 2 worker nodes
+* CRIU installed on the worker nodes
+* NFS server configured and accessible from all nodes
+* containerd as the container runtime
+* Extended kubelet
+
+## 2. Provision Kubernetes cluster with Podmigratin enabled.
+
+ The document to init k8s cluster, which enables podmigration feature can be found at:
+
+* https://github.com/SSU-DCN/podmigration-operator/blob/main/init-cluster-containerd-CRIU.md
+
+## 3. Install Checkpoint and migrate commands in Kubernets cluster
+
+To install ``kubectl migrate/checkpoint`` command, follow the guide at
+
+* https://github.com/SSU-DCN/podmigration-operator/tree/main/kubectl-plugin
+
+## 4. Start pod-migration controller and api-server
+
+Run the following command at directory podmigration-operator:
+
+* To run Podmigration operator:
+
 ```
-$ cd podmigration-operator/config/samples/migration-example
-$ kubectl apply -f 2.yaml
-$ kubectl get pods
+sudo snap install kustomize
+sudo apt-get install gcc
+make manifests
+make install
+make run
 ```
-#### There are three options to live-migrate a running Pod as following:
-1. Live-migrate video-stream application via api-server:
+
+* To run api-server, which enables ``kubectl migrate`` command:
+
 ```
-$ curl --request POST 'localhost:5000/Podmigrations' --header 'Content-Type: application/json' --data-raw '{"name":"test1", "replicas":1, "action":"live-migration", "sourcePod":"video", "destHost":"worker1"}'
-$ curl --request GET 'localhost:5000/Podmigrations'
+go run ./api-server/cmd/main.go
 ```
-2. Live-migrate video-stream application via kubectl apply:
-```
-$ kubectl apply -f test2.yaml
-```
-3. Live-migrate video-stream application via kubectl migrate command:
-- Note: As default, K8S doesn't have ```kubectl migrate``` and ```kubectl checkpoint``` command. To use this extended kubectl plugin please check the guide at https://github.com/SSU-DCN/podmigration-operator/tree/main/kubectl-plugin
-```
-$ kubectl migrate video worker1
-```
-* To delete:
-```
-$ kubectl delete podmigration test2
-$ kubectl delete -f test2.yaml
-```
+
+## 5. Deploy Application for testing.
+
+
 ## Note
+
 This operator is controller of Kuberntes Pod migration for Kubernetes. It needs several changes to work such as: kubelet, container-runtime-cri (containerd-cri). The modified vesions of Kuberntes and containerd-cri beside this operator can be found in the following repos:
 
 * https://github.com/vutuong/kubernetes
-
-
-* https://github.com/vutuong/containerd-cri
-
-## References
-* https://github.com/kubernetes/kubernetes/issues/3949
-
-## Workflow
-![alt text](https://github.com/SSU-DCN/podmigration-operator/blob/main/podmigration.jpg?raw=true)
-
+* https://github.com/vutuong/containerd-crierences
