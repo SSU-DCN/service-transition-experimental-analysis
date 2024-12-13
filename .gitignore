@@ -3,6 +3,8 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+podmigration-operator/venv/
+podmigration-operator/__pycache__/
 # C extensions
 *.so
 

@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-service
+  labels:
+    app: kafka-zookeeper
+spec:
+  type: NodePort
+  ports:
+  - port: 9092
+    targetPort: 9092
+    nodePort: 32002  # Optional: Specify a NodePort in the range 30000–32767
+    protocol: TCP
+    name: kafka
+  - port: 2181
+    targetPort: 2181
+    nodePort: 32003  # Optional: Specify a NodePort for Zookeeper
+    protocol: TCP
+    name: zookeeper
+  selector:
+    app: kafka-zookeeper
+

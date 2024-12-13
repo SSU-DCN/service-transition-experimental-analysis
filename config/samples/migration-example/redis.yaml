@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: redis
+  labels:
+    app: redis
+spec:
+  containers:
+  - name: redis
+    image: redis:7.0.12
+    ports:
+    - containerPort: 6379
+    args: ["redis-server", "--save", "", "--appendonly", "no"]
+      #args: ["redis-server", "--save", "60", "1", "--appendonly", "yes"]  # Enable AOF persistence
+

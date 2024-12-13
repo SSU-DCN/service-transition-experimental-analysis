@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ml-training-app-service
+  labels:
+    app: ml-training
+spec:
+  selector:
+    app: ml-training
+  ports:
+  - protocol: TCP
+    port: 5000       # Service port
+    targetPort: 5000 # Container port
+  type: NodePort     # Expose the service on a NodePort (for external access)
+

@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: rabbitmq
+  labels:
+    app: rabbitmq
+spec:
+  containers:
+  - name: rabbitmq
+    image: rabbitmq:3-management
+    ports:
+    - containerPort: 5672       # Messaging port
+    - containerPort: 15672      # Management UI port
+    env:
+    - name: RABBITMQ_DEFAULT_USER
+      value: "admin"            # Default username
+    - name: RABBITMQ_DEFAULT_PASS
+      value: "password"         # Default password
+    - name: RABBITMQ_VM_MEMORY_HIGH_WATERMARK
+      value: "0.7"              # Memory usage limit at 70%
+    args:
+    - "rabbitmq-server"
+    - "--default-queue-type=transient"  # Make all queues transient (memory-only)
+    - "--disk_free_limit=1GB"          # Set a high disk threshold to avoid disk-based safety checks
+
