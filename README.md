@@ -32,7 +32,7 @@ To install ``kubectl migrate/checkpoint`` command, follow the guide at
 
 ## 4. Start pod-migration controller and api-server
 
-Run the following command at directory podmigration-operator:
+Start the `pod-migration` controller and the accompanying API server to manage and trigger pod migrations:
 
 * To run Podmigration operator:
 
@@ -50,8 +50,78 @@ make run
 go run ./api-server/cmd/main.go
 ```
 
+Ensure the controller and API server are runningh and accessible in the cluster
+
 ## 5. Deploy Application for testing.
 
+To test the migration setuo, deploy the following applications:
+
+1. Video Streaming Application.
+   This application simulates a real-time video streaming workload with the following characteristics:
+
+   - High sensitivity to latency during migration
+   - requires minimal downtime to maintain stream continuity
+
+   Deployment:
+
+   ```
+   kubectl apply -f video.yaml
+   kubectl apply -f svc-video.yaml
+   ```
+2. Redis.
+
+   Redis is used to evaluate the migration of stateful applications. Characteristics:
+
+   - Persistence enabled with Append-Only File (AOF).
+   - Tests consistency and recovery of in-memory data during migration.
+
+   Deployment:
+
+   ```
+   kubectl apply -f redis.yaml
+   kubectl apply -f svc-redis.yaml
+   ```
+3. Machine Learning (Image classification-training).
+
+   This application performs training for image classification models. Characteristics:
+
+   - Resource-intensive workload.
+   - Tests how migration affects long-running compute tasks.
+
+   Deployment:
+
+   ```
+   kubectl apply -f ml-training.yaml
+   kubectl apply -f svc-ml-training.yaml
+   ```
+
+## 6. Start Monitoring Scripts
+
+Two monitoring scripts are provided to assist in observing the system:
+
+1. **Pod event monitoring script**: Monitors the status of pods in the cluster and measure pod's creation time, application accessible time.
+
+   ```
+   service-transition-experimental-analysis\config\samples\migration-example\ python3 measurement.py 
+   ```
+
+   Edit the corresponding application name, protocol and service pord in the script
+
+   ```
+   monitor_pod_events(
+       namespace="default",
+       label_selector="app=video",
+       app_url="192.168.28.184",
+       app_port=31680,    #redis:31625, mongo:30257
+       app_type="http"  # Use "http" for HTTP-based apps or "redis" for Redis
+   )
+   ```
+2. **Pod Migration Monitoring Script:** Observes and logs pod migrations triggered by node drains, remove and re-deploy pod in new nodes.
+
+```
+   service-transition-experimental-analysis\config\samples\migration-example\ bash k8s_default_migrate.sh
+
+```
 
 ## Note
 
