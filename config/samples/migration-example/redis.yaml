@@ -10,6 +10,6 @@ spec:
     image: redis:7.0.12
     ports:
     - containerPort: 6379
-    args: ["redis-server", "--save", "", "--appendonly", "no"]
+    args: ["redis-server", "--save", "", "--appendonly", "no"] #transient
       #args: ["redis-server", "--save", "60", "1", "--appendonly", "yes"]  # Enable AOF persistence
 

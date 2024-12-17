@@ -1,9 +1,9 @@
 apiVersion: v1
-kind: Pod
+kind: Pod #not Deployment
 metadata:
   name: ml-training-app
   labels:
-    app: ml-training
+    app: ml-training 
 spec:
   containers:
   - name: ml-training-app
