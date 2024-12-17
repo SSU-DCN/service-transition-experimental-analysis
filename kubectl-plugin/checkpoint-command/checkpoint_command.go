@@ -84,7 +84,7 @@ func (a *MigrateArgs) Complete(cmd *cobra.Command, args []string) error {
 func (a *MigrateArgs) Run() error {
 	// Step1: Get sourcePod
 	ctx := context.Background()
-	config, _ := clientcmd.BuildConfigFromFlags("", "/home/ubuntu/.kube/config")
+	config, _ := clientcmd.BuildConfigFromFlags("", "/home/ubuntu/.kube/config") //edit the path for kube config
 	clientset, _ := kubernetes.NewForConfig(config)
 	pod, _ := clientset.CoreV1().Pods("default").Get(ctx, a.SourcePodName, metav1.GetOptions{})
 	podsClient := clientset.CoreV1().Pods(corev1.NamespaceDefault)
