@@ -156,10 +156,10 @@ func (r *PodmigrationReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error
 			}
 		}
 		log.Info("", "Live-migration", "checkpointPath"+checkpointPath)
-		log.Info("", "Live-migration", "Step 3 - Wait until checkpoint info are created - completed", "duration", time.Since(startWaitCheckpoint).Milliseconds())
+		log.Info("", "Live-migration", "Step 3 - Wait until checkpoint info are created - completed", "duration",  time.Since(startWaitCheckpoint).Milliseconds())
 		r.Log.Info("", "Live-migration", "creating checkpoint ")
 		time.Sleep(5 * time.Second)
-		// Step4: restore destPod from sourcePod checkpoted info
+		// Step4: restore destPod from sourcePod checkpoint info
 		startRestore := time.Now()
 		newPod, err := r.restorePod(ctx, pod, annotations["sourcePod"], checkpointPath)
 		if err != nil {
@@ -301,7 +301,7 @@ func (r *PodmigrationReconciler) checkpointPod(ctx context.Context, pod *corev1.
 
 	snapshotPolicy := "checkpoint"
 	if snapshotPath == "" {
-		snapshotPath = "/var/lib/kubelet/migration/kkk"
+		snapshotPath = "/var/lib/kubelet/migration/kkk" //path in NFS
 	}
 	// Update pod annotations for checkpoint
 	if err := r.updateAnnotations(ctx, pod, snapshotPolicy, snapshotPath); err != nil {
