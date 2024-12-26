@@ -1,11 +1,11 @@
 /*
 
+Copyright 2024 DCN
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -156,7 +156,7 @@ func (r *PodmigrationReconciler) Reconcile(req ctrl.Request) (ctrl.Result, error
 			}
 		}
 		log.Info("", "Live-migration", "checkpointPath"+checkpointPath)
-		log.Info("", "Live-migration", "Step 3 - Wait until checkpoint info are created - completed", "duration",  time.Since(startWaitCheckpoint).Milliseconds())
+		log.Info("", "Live-migration", "Step 3 - Wait until checkpoint info are created - completed", "duration", time.Since(startWaitCheckpoint).Milliseconds())
 		r.Log.Info("", "Live-migration", "creating checkpoint ")
 		time.Sleep(5 * time.Second)
 		// Step4: restore destPod from sourcePod checkpoint info
